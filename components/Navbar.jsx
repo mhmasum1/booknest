@@ -13,11 +13,11 @@ export default function Navbar() {
                     <Link href="/books">Books</Link>
                     <Link href="/about">About</Link>
                     <Link href="/contact">Contact</Link>
-                    <Link
-                        href="/login"
-                        className="rounded bg-blue-600 px-4 py-2 text-white"
-                    >
+                    <Link href="/login" className="rounded bg-blue-600 px-4 py-2 text-white">
                         Login
+                    </Link>
+                    <Link href="/register" className="rounded border px-4 py-2">
+                        Register
                     </Link>
                 </div>
             </div>
