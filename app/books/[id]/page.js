@@ -1,9 +1,16 @@
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { books } from "@/lib/books";
 
 export default async function BookDetailsPage({ params }) {
     const { id } = await params;
-    const book = books.find((item) => item.id === id);
+
+    const client = await clientPromise;
+    const db = client.db(process.env.DB_NAME);
+
+    const book = await db.collection("books").findOne({
+        _id: new ObjectId(id),
+    });
 
     if (!book) {
         return <div className="p-10 text-center text-xl">Book not found</div>;
@@ -12,7 +19,7 @@ export default async function BookDetailsPage({ params }) {
     return (
         <div className="mx-auto max-w-5xl px-4 py-10">
             <img
-                src={book.image}
+                src={book.image || "https://via.placeholder.com/800x400?text=Book+Image"}
                 alt={book.title}
                 className="h-[400px] w-full rounded-xl object-cover"
             />
@@ -26,9 +33,6 @@ export default async function BookDetailsPage({ params }) {
                 </p>
                 <p>
                     <strong>Category:</strong> {book.category}
-                </p>
-                <p>
-                    <strong>Date:</strong> {book.date}
                 </p>
             </div>
 

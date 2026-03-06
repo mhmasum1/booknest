@@ -20,9 +20,9 @@ export default function LoginPage() {
         console.log(result);
     };
 
-    const handleGoogleLogin = async () => {
-        await signIn("google", { callbackUrl: "/" });
-    };
+    // const handleGoogleLogin = async () => {
+    //     await signIn("google", { callbackUrl: "/" });
+    // };
 
     return (
         <div className="mx-auto max-w-md px-4 py-16">
@@ -55,12 +55,12 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <button
+                {/* <button
                     onClick={handleGoogleLogin}
                     className="mt-4 w-full rounded border px-4 py-2"
                 >
                     Continue with Google
-                </button>
+                </button> */}
             </div>
         </div>
     );

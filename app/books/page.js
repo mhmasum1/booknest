@@ -1,7 +1,16 @@
+import clientPromise from "@/lib/mongodb";
 import BookCard from "@/components/BookCard";
-import { books } from "@/lib/books";
 
-export default function BooksPage() {
+export default async function BooksPage() {
+    const client = await clientPromise;
+    const db = client.db("booknestDB");
+    const books = await db.collection("books").find({}).toArray();
+
+    const formattedBooks = books.map((book) => ({
+        ...book,
+        _id: book._id.toString(),
+    }));
+
     return (
         <div className="mx-auto max-w-6xl px-4 py-10">
             <h1 className="text-3xl font-bold">All Books</h1>
@@ -24,8 +33,8 @@ export default function BooksPage() {
             </div>
 
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {books.map((book) => (
-                    <BookCard key={book.id} book={book} />
+                {formattedBooks.map((book) => (
+                    <BookCard key={book._id} book={book} />
                 ))}
             </div>
         </div>

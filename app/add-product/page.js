@@ -12,26 +12,48 @@ export default function AddProductPage() {
         image: "",
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setFormData((prev) => ({
+            ...prev,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("New Product:", formData);
-        alert("Product added successfully!");
+        setLoading(true);
 
-        setFormData({
-            title: "",
-            shortDescription: "",
-            fullDescription: "",
-            price: "",
-            category: "",
-            image: "",
-        });
+        try {
+            const res = await fetch("/api/books", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Book added successfully!");
+                setFormData({
+                    title: "",
+                    shortDescription: "",
+                    fullDescription: "",
+                    price: "",
+                    category: "",
+                    image: "",
+                });
+            } else {
+                alert(data.message || "Something went wrong");
+            }
+        } catch (error) {
+            alert("Failed to add book");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -44,63 +66,65 @@ export default function AddProductPage() {
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                     <input
-                        type="text"
                         name="title"
-                        placeholder="Title"
                         value={formData.title}
                         onChange={handleChange}
+                        type="text"
+                        placeholder="Title"
                         className="w-full rounded border px-4 py-2"
                         required
                     />
                     <input
-                        type="text"
                         name="shortDescription"
-                        placeholder="Short Description"
                         value={formData.shortDescription}
                         onChange={handleChange}
+                        type="text"
+                        placeholder="Short Description"
                         className="w-full rounded border px-4 py-2"
                         required
                     />
                     <textarea
                         name="fullDescription"
-                        placeholder="Full Description"
-                        rows="5"
                         value={formData.fullDescription}
                         onChange={handleChange}
+                        rows="5"
+                        placeholder="Full Description"
                         className="w-full rounded border px-4 py-2"
                         required
                     />
                     <input
-                        type="number"
                         name="price"
-                        placeholder="Price"
                         value={formData.price}
                         onChange={handleChange}
+                        type="number"
+                        placeholder="Price"
                         className="w-full rounded border px-4 py-2"
                         required
                     />
                     <input
-                        type="text"
                         name="category"
-                        placeholder="Category / Date / Priority"
                         value={formData.category}
                         onChange={handleChange}
+                        type="text"
+                        placeholder="Category"
                         className="w-full rounded border px-4 py-2"
                         required
                     />
                     <input
-                        type="text"
                         name="image"
-                        placeholder="Image URL (optional)"
                         value={formData.image}
                         onChange={handleChange}
+                        type="text"
+                        placeholder="Image URL"
                         className="w-full rounded border px-4 py-2"
                     />
+
                     <button
                         type="submit"
+                        disabled={loading}
                         className="rounded bg-blue-600 px-4 py-2 text-white"
                     >
-                        Submit
+                        {loading ? "Submitting..." : "Submit"}
                     </button>
                 </form>
             </div>
