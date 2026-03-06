@@ -21,7 +21,6 @@ export default function AddProductPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         console.log("New Product:", formData);
         alert("Product added successfully!");
 
@@ -53,7 +52,6 @@ export default function AddProductPage() {
                         className="w-full rounded border px-4 py-2"
                         required
                     />
-
                     <input
                         type="text"
                         name="shortDescription"
@@ -63,7 +61,6 @@ export default function AddProductPage() {
                         className="w-full rounded border px-4 py-2"
                         required
                     />
-
                     <textarea
                         name="fullDescription"
                         placeholder="Full Description"
@@ -73,7 +70,6 @@ export default function AddProductPage() {
                         className="w-full rounded border px-4 py-2"
                         required
                     />
-
                     <input
                         type="number"
                         name="price"
@@ -83,7 +79,6 @@ export default function AddProductPage() {
                         className="w-full rounded border px-4 py-2"
                         required
                     />
-
                     <input
                         type="text"
                         name="category"
@@ -93,7 +88,6 @@ export default function AddProductPage() {
                         className="w-full rounded border px-4 py-2"
                         required
                     />
-
                     <input
                         type="text"
                         name="image"
@@ -102,7 +96,6 @@ export default function AddProductPage() {
                         onChange={handleChange}
                         className="w-full rounded border px-4 py-2"
                     />
-
                     <button
                         type="submit"
                         className="rounded bg-blue-600 px-4 py-2 text-white"
