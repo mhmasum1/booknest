@@ -32,7 +32,7 @@ export default function LoginPage() {
 
     const handleDemoLogin = async () => {
         const result = await signIn("credentials", {
-            email: "test@gmail.com",
+            email: "admin@gmail.com",
             password: "123456",
             redirect: false,
         });

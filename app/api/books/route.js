@@ -7,8 +7,9 @@ export async function GET() {
         const db = client.db(process.env.DB_NAME);
         const books = await db.collection("books").find({}).toArray();
 
-        return NextResponse.json(books);
+        return NextResponse.json(books, { status: 200 });
     } catch (error) {
+        console.error("GET /api/books error:", error);
         return NextResponse.json(
             { message: "Failed to fetch books", error: error.message },
             { status: 500 }
@@ -42,6 +43,7 @@ export async function POST(request) {
             { status: 201 }
         );
     } catch (error) {
+        console.error("POST /api/books error:", error);
         return NextResponse.json(
             { message: "Failed to add book", error: error.message },
             { status: 500 }
