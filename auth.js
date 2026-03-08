@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { MongoClient } from "mongodb";
 
 export const authOptions = {
     providers: [
@@ -11,11 +12,25 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
+                // Demo login
                 if (
                     credentials?.email === "admin@gmail.com" &&
                     credentials?.password === "123456"
                 ) {
-                    return { id: "1", name: "Admin", email: "admin@gmail.com" };
+                    return { id: "demo", name: "Admin", email: "admin@gmail.com" };
+                }
+
+                // MongoDB user login
+                const client = await MongoClient.connect(process.env.MONGODB_URI);
+                const db = client.db(process.env.DB_NAME);
+                const user = await db.collection("users").findOne({
+                    email: credentials.email,
+                    password: credentials.password,
+                });
+                await client.close();
+
+                if (user) {
+                    return { id: user._id.toString(), name: user.name, email: user.email };
                 }
                 return null;
             },
