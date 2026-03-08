@@ -1,35 +1,50 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
 
-const uri = process.env.MONGODB_URI;
+export async function GET() {
+    try {
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+        const books = await db.collection("books").find({}).toArray();
 
-if (!uri) {
-    throw new Error("Please add your MONGODB_URI to .env.local");
-}
-
-let client;
-let clientPromise;
-
-if (process.env.NODE_ENV === "development") {
-    if (!global._mongoClientPromise) {
-        client = new MongoClient(uri, {
-            serverApi: {
-                version: ServerApiVersion.v1,
-                strict: true,
-                deprecationErrors: true,
-            },
-        });
-        global._mongoClientPromise = client.connect();
+        return NextResponse.json(books);
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Failed to fetch books", error: error.message },
+            { status: 500 }
+        );
     }
-    clientPromise = global._mongoClientPromise;
-} else {
-    client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        },
-    });
-    clientPromise = client.connect();
 }
 
-export default clientPromise;
+export async function POST(request) {
+    try {
+        const body = await request.json();
+
+        const newBook = {
+            title: body.title,
+            shortDescription: body.shortDescription,
+            fullDescription: body.fullDescription,
+            price: Number(body.price),
+            category: body.category,
+            image: body.image || "",
+            createdAt: new Date(),
+        };
+
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+        const result = await db.collection("books").insertOne(newBook);
+
+        return NextResponse.json(
+            {
+                message: "Book added successfully",
+                insertedId: result.insertedId,
+            },
+            { status: 201 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Failed to add book", error: error.message },
+            { status: 500 }
+        );
+    }
+}

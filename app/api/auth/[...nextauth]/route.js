@@ -1,47 +1,52 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
 
-const handler = NextAuth({
-    providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        }),
+export async function GET() {
+    try {
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+        const books = await db.collection("books").find({}).toArray();
 
-        CredentialsProvider({
-            name: "Credentials",
-            credentials: {
-                email: {},
-                password: {},
+        return NextResponse.json(books, { status: 200 });
+    } catch (error) {
+        console.error("GET /api/books error:", error);
+        return NextResponse.json(
+            { message: "Failed to fetch books", error: error.message },
+            { status: 500 }
+        );
+    }
+}
+
+export async function POST(request) {
+    try {
+        const body = await request.json();
+
+        const newBook = {
+            title: body.title,
+            shortDescription: body.shortDescription,
+            fullDescription: body.fullDescription,
+            price: Number(body.price),
+            category: body.category,
+            image: body.image || "",
+            createdAt: new Date(),
+        };
+
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+        const result = await db.collection("books").insertOne(newBook);
+
+        return NextResponse.json(
+            {
+                message: "Book added successfully",
+                insertedId: result.insertedId,
             },
-            async authorize(credentials) {
-
-                if (
-                    credentials.email === "test@gmail.com" &&
-                    credentials.password === "123456"
-                ) {
-                    return {
-                        id: "1",
-                        name: "Test User",
-                        email: "test@gmail.com",
-                    };
-                }
-
-                return null;
-            },
-        }),
-    ],
-
-    pages: {
-        signIn: "/login",
-    },
-
-    session: {
-        strategy: "jwt",
-    },
-
-    secret: process.env.NEXTAUTH_SECRET,
-});
-
-export { handler as GET, handler as POST };
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("POST /api/books error:", error);
+        return NextResponse.json(
+            { message: "Failed to add book", error: error.message },
+            { status: 500 }
+        );
+    }
+}
