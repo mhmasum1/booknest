@@ -44,6 +44,7 @@ export const authOptions = {
     pages: { signIn: "/login" },
     session: { strategy: "jwt" },
     secret: process.env.NEXTAUTH_SECRET,
+    trustHost: true,
 };
 
 export default NextAuth(authOptions);
