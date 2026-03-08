@@ -1,9 +1,12 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
+    const router = useRouter();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -13,16 +16,33 @@ export default function LoginPage() {
         const result = await signIn("credentials", {
             email,
             password,
-            redirect: true,
-            callbackUrl: "/",
+            redirect: false,
         });
 
-        console.log(result);
+        if (result?.ok) {
+            router.push("/");
+        } else {
+            alert("Invalid email or password");
+        }
     };
 
-    // const handleGoogleLogin = async () => {
-    //     await signIn("google", { callbackUrl: "/" });
-    // };
+    const handleGoogleLogin = async () => {
+        await signIn("google", { callbackUrl: "/" });
+    };
+
+    const handleDemoLogin = async () => {
+        const result = await signIn("credentials", {
+            email: "test@gmail.com",
+            password: "123456",
+            redirect: false,
+        });
+
+        if (result?.ok) {
+            router.push("/");
+        } else {
+            alert("Demo login failed");
+        }
+    };
 
     return (
         <div className="mx-auto max-w-md px-4 py-16">
@@ -40,6 +60,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
+
                     <input
                         type="password"
                         placeholder="Password"
@@ -47,6 +68,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+
                     <button
                         type="submit"
                         className="w-full rounded bg-blue-600 px-4 py-2 text-white"
@@ -55,12 +77,23 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                {/* <button
-                    onClick={handleGoogleLogin}
-                    className="mt-4 w-full rounded border px-4 py-2"
-                >
-                    Continue with Google
-                </button> */}
+                <div className="mt-4">
+                    <button
+                        onClick={handleDemoLogin}
+                        className="w-full rounded bg-green-600 px-4 py-2 text-white"
+                    >
+                        Demo Credentials Login
+                    </button>
+                </div>
+
+                <div className="mt-6 border-t pt-6">
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="w-full rounded border px-4 py-2"
+                    >
+                        Continue with Google
+                    </button>
+                </div>
             </div>
         </div>
     );
