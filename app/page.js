@@ -6,12 +6,12 @@ import Testimonials from "@/components/Testimonials";
 
 export default function HomePage() {
   return (
-    <div>
+    <main className="bg-white text-gray-900">
       <Hero />
       <FeaturedBooks />
       <Categories />
       <WhyChooseUs />
       <Testimonials />
-    </div>
+    </main>
   );
 }

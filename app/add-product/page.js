@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AddProductPage() {
     const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ export default function AddProductPage() {
             const data = await res.json();
 
             if (res.ok) {
-                alert("Book added successfully!");
+                toast.success("Book added successfully!");
                 setFormData({
                     title: "",
                     shortDescription: "",
@@ -50,84 +51,102 @@ export default function AddProductPage() {
                 alert(data.message || "Something went wrong");
             }
         } catch (error) {
-            alert("Failed to add book");
+            toast.error("Failed to add book");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="mx-auto max-w-2xl px-4 py-10">
-            <div className="rounded-xl border bg-white p-6 shadow">
-                <h1 className="text-3xl font-bold">Add Product</h1>
-                <p className="mt-2 text-gray-600">
-                    Fill in the form to add a new book.
-                </p>
+        <main className="min-h-screen bg-slate-50 px-4 py-10 md:px-6 md:py-14">
+            <div className="mx-auto max-w-2xl">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
 
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                    <input
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        type="text"
-                        placeholder="Title"
-                        className="w-full rounded border px-4 py-2"
-                        required
-                    />
-                    <input
-                        name="shortDescription"
-                        value={formData.shortDescription}
-                        onChange={handleChange}
-                        type="text"
-                        placeholder="Short Description"
-                        className="w-full rounded border px-4 py-2"
-                        required
-                    />
-                    <textarea
-                        name="fullDescription"
-                        value={formData.fullDescription}
-                        onChange={handleChange}
-                        rows="5"
-                        placeholder="Full Description"
-                        className="w-full rounded border px-4 py-2"
-                        required
-                    />
-                    <input
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        type="number"
-                        placeholder="Price"
-                        className="w-full rounded border px-4 py-2"
-                        required
-                    />
-                    <input
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        type="text"
-                        placeholder="Category"
-                        className="w-full rounded border px-4 py-2"
-                        required
-                    />
-                    <input
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        type="text"
-                        placeholder="Image URL"
-                        className="w-full rounded border px-4 py-2"
-                    />
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Add New Book
+                    </h1>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="rounded bg-blue-600 px-4 py-2 text-white"
-                    >
-                        {loading ? "Submitting..." : "Submit"}
-                    </button>
-                </form>
+                    <p className="mt-2 text-gray-600">
+                        Fill in the form below to add a new book to the collection.
+                    </p>
+
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+
+                        <input
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            type="text"
+                            placeholder="Book Title"
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            required
+                        />
+
+                        <input
+                            name="shortDescription"
+                            value={formData.shortDescription}
+                            onChange={handleChange}
+                            type="text"
+                            placeholder="Short Description"
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            required
+                        />
+
+                        <textarea
+                            name="fullDescription"
+                            value={formData.fullDescription}
+                            onChange={handleChange}
+                            rows="5"
+                            placeholder="Full Description"
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            required
+                        />
+
+                        <input
+                            name="price"
+                            value={formData.price}
+                            onChange={handleChange}
+                            type="number"
+                            placeholder="Price"
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            required
+                        />
+
+                        {/* Category Dropdown */}
+                        <select
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            required
+                        >
+                            <option value="">Select Category</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Programming">Programming</option>
+                            <option value="Self-help">Self-help</option>
+                            <option value="Business">Business</option>
+                        </select>
+
+                        <input
+                            name="image"
+                            value={formData.image}
+                            onChange={handleChange}
+                            type="text"
+                            placeholder="Image URL"
+                            className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
+                        >
+                            {loading ? "Submitting..." : "Add Book"}
+                        </button>
+
+                    </form>
+                </div>
             </div>
-        </div>
+        </main>
     );
 }
