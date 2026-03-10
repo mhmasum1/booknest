@@ -3,12 +3,16 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
+
     const [menuOpen, setMenuOpen] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+    const dropdownRef = useRef(null);
 
     const navLinks = [
         { href: "/", label: "Home" },
@@ -23,7 +27,21 @@ export default function Navbar() {
             : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
         }`;
 
-    const closeMenu = () => setMenuOpen(false);
+    const closeMenu = () => {
+        setMenuOpen(false);
+        setUserDropdownOpen(false);
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setUserDropdownOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
         <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 shadow-sm backdrop-blur-md">
@@ -66,12 +84,66 @@ export default function Navbar() {
                                     Manage Products
                                 </Link>
 
-                                <button
-                                    onClick={() => signOut({ callbackUrl: "/" })}
-                                    className="rounded-xl bg-red-500 px-4 py-2 text-white transition hover:bg-red-600"
-                                >
-                                    Logout
-                                </button>
+                                <div className="relative ml-2" ref={dropdownRef}>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setUserDropdownOpen((prev) => !prev)
+                                        }
+                                        className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+                                    >
+                                        <span>{session.user?.name || "User"}</span>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className={`h-4 w-4 transition ${userDropdownOpen ? "rotate-180" : ""
+                                                }`}
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </button>
+
+                                    {userDropdownOpen && (
+                                        <div className="absolute right-0 mt-3 w-56 rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
+                                            <Link
+                                                href="/add-product"
+                                                className="block rounded-xl px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
+                                                onClick={() =>
+                                                    setUserDropdownOpen(false)
+                                                }
+                                            >
+                                                Add Product
+                                            </Link>
+
+                                            <Link
+                                                href="/manage-products"
+                                                className="block rounded-xl px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
+                                                onClick={() =>
+                                                    setUserDropdownOpen(false)
+                                                }
+                                            >
+                                                Manage Products
+                                            </Link>
+
+                                            <button
+                                                onClick={() => {
+                                                    setUserDropdownOpen(false);
+                                                    signOut({ callbackUrl: "/" });
+                                                }}
+                                                className="mt-1 block w-full rounded-xl bg-red-500 px-4 py-2 text-left text-sm text-white transition hover:bg-red-600"
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </>
                         ) : (
                             <>
@@ -143,6 +215,12 @@ export default function Navbar() {
                                 <span className="px-3 py-2 text-gray-500">Loading...</span>
                             ) : session ? (
                                 <>
+                                    <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                                        <p className="text-sm font-semibold text-blue-700">
+                                            {session.user?.name || "User"}
+                                        </p>
+                                    </div>
+
                                     <Link
                                         href="/add-product"
                                         className="rounded-xl border border-gray-200 px-4 py-2 transition hover:bg-gray-100"
