@@ -3,18 +3,18 @@ import Link from "next/link";
 
 export default function BookCard({ book }) {
     const imageSrc =
-        book.image || "https://via.placeholder.com/400x300?text=Book+Image";
+        book.image || "https://via.placeholder.com/400x500?text=Book+Image";
 
     return (
         <div className="group overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
             {/* Image */}
-            <div className="relative h-64 w-full overflow-hidden rounded-xl">
+            <div className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100">
                 <Image
                     src={imageSrc}
                     alt={book.title}
                     fill
-                    className="object-cover transition duration-500 ease-in-out group-hover:scale-110"
+                    className="object-contain p-2 transition duration-300 group-hover:scale-105"
                     sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
                 />
             </div>

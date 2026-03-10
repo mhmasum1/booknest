@@ -74,14 +74,14 @@ export default function Navbar() {
                                     href="/add-product"
                                     className="rounded-xl border border-gray-200 px-4 py-2 transition hover:bg-gray-100"
                                 >
-                                    Add Product
+                                    Add Book
                                 </Link>
 
                                 <Link
                                     href="/manage-products"
                                     className="rounded-xl border border-gray-200 px-4 py-2 transition hover:bg-gray-100"
                                 >
-                                    Manage Products
+                                    Manage Books
                                 </Link>
 
                                 <div className="relative ml-2" ref={dropdownRef}>
@@ -119,7 +119,7 @@ export default function Navbar() {
                                                     setUserDropdownOpen(false)
                                                 }
                                             >
-                                                Add Product
+                                                Add Book
                                             </Link>
 
                                             <Link
@@ -129,7 +129,7 @@ export default function Navbar() {
                                                     setUserDropdownOpen(false)
                                                 }
                                             >
-                                                Manage Products
+                                                Manage Books
                                             </Link>
 
                                             <button
@@ -226,7 +226,7 @@ export default function Navbar() {
                                         className="rounded-xl border border-gray-200 px-4 py-2 transition hover:bg-gray-100"
                                         onClick={closeMenu}
                                     >
-                                        Add Product
+                                        Add Book
                                     </Link>
 
                                     <Link
@@ -234,7 +234,7 @@ export default function Navbar() {
                                         className="rounded-xl border border-gray-200 px-4 py-2 transition hover:bg-gray-100"
                                         onClick={closeMenu}
                                     >
-                                        Manage Products
+                                        Manage Books
                                     </Link>
 
                                     <button
